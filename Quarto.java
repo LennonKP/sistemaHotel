@@ -1,13 +1,14 @@
 public class Quarto {
     private int numero;
     private Tipo tipo;
-    private float valor;
+    private double valor;
     private boolean estaDisponivel;
 
-    public Quarto(int numero, Tipo tipo, float valor) {
+    public Quarto(int numero, Tipo tipo, double valor) {
         this.setNumero(numero);
         this.setTipo(tipo);
         this.setValor(valor);
+        this.estaDisponivel = true;
     }
 
     public void reservar() {
@@ -34,11 +35,11 @@ public class Quarto {
         this.tipo = tipo;
     }
 
-    public float getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(float valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 

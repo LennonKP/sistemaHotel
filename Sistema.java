@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class Sistema {
         do {
             this.displayMenu();
             option = scanner.nextInt();
+            scanner.nextLine();
             this.handleOption(option, scanner);
         } while (option != 8);
 
@@ -156,7 +158,7 @@ public class Sistema {
         if (clienteReserva == null) {
             System.out.println("Cliente não encontrado");
             return;
-            
+
         }
 
         for (var reserva : this.reservas.entrySet()) {

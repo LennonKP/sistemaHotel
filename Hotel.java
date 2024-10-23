@@ -30,7 +30,7 @@ public class Hotel {
             return;
         }
 
-        this.quartos.put(numero, new Quarto(numero, tipo, numero));
+        this.quartos.put(numero, new Quarto(numero, tipo, valor));
         System.out.println("Quarto inserido");
     }
 

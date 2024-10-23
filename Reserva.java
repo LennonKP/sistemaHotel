@@ -1,11 +1,19 @@
 import java.util.Date;
+import java.util.UUID;
 
 public class Reserva {
-    private int numero;
+    private UUID numero;
     private Cliente cliente;
     private Quarto quarto;
     private Date dataCheckin;
     private Date dataCheckout;
+
+    public Reserva(Cliente cliente, Quarto quarto, Date dataCheckin, Date dataCheckout) {
+        this.numero = UUID.randomUUID();
+        this.quarto = quarto;
+        this.dataCheckin = dataCheckin;
+        this.dataCheckout = dataCheckout;
+    }
 
     public void confirmarReserva() {
     }
