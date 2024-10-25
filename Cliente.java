@@ -22,6 +22,7 @@ public class Cliente {
     public void fazerReserva(Map<UUID, Reserva> reservas, Quarto quarto, Date dataCheckin, Date dataCheckout) {
         var reserva = new Reserva(this, quarto, dataCheckin, dataCheckout);
         reservas.put(reserva.getNumero(), reserva);
+        quarto.reservar();
         System.out.println("Reserva inserida!");
     }
 

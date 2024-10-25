@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -10,11 +11,23 @@ public class Reserva {
     private Status status;
 
     public Reserva(Cliente cliente, Quarto quarto, Date dataCheckin, Date dataCheckout) {
+        this.setCliente(cliente);
         this.setNumero(UUID.randomUUID());
         this.setQuarto(quarto);
         this.setDataCheckin(dataCheckin);
         this.setDataCheckout(dataCheckout);
         this.setStatus(status);
+    }
+
+    @Override
+    public String toString() {
+        var sdf = new SimpleDateFormat();
+        return String.format(
+                "Cliente: %s - Número: %s - CheckIn - %s - CheckOut - %s",
+                this.getCliente().getNome(),
+                this.getQuarto().getNumero(),
+                sdf.format(this.getDataCheckin()),
+                sdf.format(this.getDataCheckout()));
     }
 
     // Não sabia o que caracterizava confirmar e cancelar então criei um STATUS

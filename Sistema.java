@@ -29,7 +29,7 @@ public class Sistema {
             System.out.println();
             this.handleOption(option, scanner);
             System.out.println();
-        } while (option != 9);
+        } while (option != 10);
 
         scanner.close();
     }
@@ -43,8 +43,9 @@ public class Sistema {
         System.out.println("5. Fazer Reserva");
         System.out.println("6. Cancelar Reserva");
         System.out.println("7. Listar Reservas de um Cliente");
-        System.out.println("8. Adicionar Cliente");
-        System.out.println("9. Sair");
+        System.out.println("8. Listar Todas Reservas");
+        System.out.println("9. Adicionar Cliente");
+        System.out.println("10. Sair");
         System.out.print("Escolha uma opção: ");
     }
 
@@ -57,8 +58,9 @@ public class Sistema {
             case 5 -> fazerReserva(scanner);
             case 6 -> cancelarReserva(scanner);
             case 7 -> listarReservasCliente(scanner);
-            case 8 -> adicionarCliente(scanner);
-            case 9 -> System.out.println("Saindo do sistema...");
+            case 8 -> listarTodasReservas();
+            case 9 -> adicionarCliente(scanner);
+            case 10 -> System.out.println("Saindo do sistema...");
             default -> System.out.println("Opção inválida. Tente novamente.");
         }
     }
@@ -131,6 +133,7 @@ public class Sistema {
         for (var c : this.clientes) {
             if (c.getNome().equals(nomeCliente)) {
                 cliente = c;
+                break;
             }
         }
         if (cliente == null) {
@@ -152,8 +155,8 @@ public class Sistema {
             return;
         }
 
-        var dataIn = ScannerUtils.getDateEntry(scanner, "Informe a data de CheckIn", d -> d.compareTo(new Date()) >= 0);
-        var dataOut = ScannerUtils.getDateEntry(scanner, "Informe a data de CheckOut", d -> d.after(dataIn));
+        var dataIn = ScannerUtils.getDateEntry(scanner, "Informe a data de CheckIn: ", d -> d.compareTo(new Date()) >= 0);
+        var dataOut = ScannerUtils.getDateEntry(scanner, "Informe a data de CheckOut: ", d -> d.after(dataIn));
         cliente.fazerReserva(this.reservas, quarto, dataIn, dataOut);
     }
 
@@ -165,6 +168,10 @@ public class Sistema {
      * @param scanner
      */
     private void cancelarReserva(Scanner scanner) {
+        if (this.reservas.isEmpty()) {
+            System.out.println("Não existem reservas");
+        }
+
         var numeroReserva = UUID.fromString(ScannerUtils.getStringEntry(scanner, "Informe o número da reserva: "));
         var reserva = this.reservas.get(numeroReserva);
         if (reserva == null) {
@@ -184,9 +191,11 @@ public class Sistema {
     private void listarReservasCliente(Scanner scanner) {
         String nomeCliente = ScannerUtils.getStringEntry(scanner, "Informe o nome do Cliente: ");
         Cliente clienteReserva = null;
+
         for (var cliente : this.clientes) {
             if (cliente.getNome().equals(nomeCliente)) {
                 clienteReserva = cliente;
+                break;
             }
         }
         if (clienteReserva == null) {
@@ -197,7 +206,7 @@ public class Sistema {
         int numReservas = 0;
         for (var reserva : this.reservas.entrySet()) {
             var reservaValue = reserva.getValue();
-            if (reservaValue.getCliente() == clienteReserva) {
+            if (reservaValue.getCliente() != null && reservaValue.getCliente().equals(clienteReserva)) {
                 numReservas++;
                 System.out.println(reservaValue);
             }
@@ -208,9 +217,16 @@ public class Sistema {
         }
     }
 
+    private void listarTodasReservas() {
+        for (var reserva : this.reservas.entrySet()) {
+            System.out.println(reserva);
+        }
+    }
+
     private void adicionarCliente(Scanner scanner) {
         String nomeCliente = ScannerUtils.getStringEntry(scanner, "Informe o nome do Cliente: ");
 
         this.clientes.add(new Cliente(nomeCliente));
+        System.out.println("Cliente adicionado!");
     }
 }
