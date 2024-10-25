@@ -1,3 +1,6 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -36,5 +39,17 @@ public class ScannerUtils {
 
     public static String getStringEntry(Scanner scanner, String prompt) {
         return getEntry(scanner, prompt, input -> input, input -> !input.isEmpty());
+    }
+
+    public static Date getDateEntry(Scanner scanner, String prompt, Function<Date, Boolean> validator) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false);
+        return getEntry(scanner, prompt, input -> {
+            try {
+                return sdf.parse(input);
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Formato de data inválido. Use o formato dd/MM/yyyy");
+            }
+        }, validator);
     }
 }
