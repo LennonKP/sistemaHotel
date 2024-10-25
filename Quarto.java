@@ -8,7 +8,14 @@ public class Quarto {
         this.setNumero(numero);
         this.setTipo(tipo);
         this.setValor(valor);
-        this.estaDisponivel = true;
+        this.setEstaDisponivel(true);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Número: %s - Tipo: %s - Valor: - %s",
+                this.getNumero(), this.getTipo(), this.getValor());
     }
 
     public void reservar() {

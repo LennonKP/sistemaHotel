@@ -7,18 +7,31 @@ public class Reserva {
     private Quarto quarto;
     private Date dataCheckin;
     private Date dataCheckout;
+    private Status status;
 
     public Reserva(Cliente cliente, Quarto quarto, Date dataCheckin, Date dataCheckout) {
-        this.numero = UUID.randomUUID();
-        this.quarto = quarto;
-        this.dataCheckin = dataCheckin;
-        this.dataCheckout = dataCheckout;
+        this.setNumero(UUID.randomUUID());
+        this.setQuarto(quarto);
+        this.setDataCheckin(dataCheckin);
+        this.setDataCheckout(dataCheckout);
+        this.setStatus(status);
     }
 
-    public void confirmarReserva() {
+    // Não sabia o que caracterizava confirmar e cancelar então criei um STATUS
+    public void confirmar() {
+        this.status = Status.CONFIRMADA;
     }
 
-    public void cancelarReserva() {
+    public void cancelar() {
+        this.status = Status.CANCELADA;
+    }
+
+    public UUID getNumero() {
+        return numero;
+    }
+
+    public void setNumero(UUID numero) {
+        this.numero = numero;
     }
 
     public Cliente getCliente() {
@@ -51,5 +64,13 @@ public class Reserva {
 
     public void setDataCheckout(Date dataCheckout) {
         this.dataCheckout = dataCheckout;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

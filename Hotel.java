@@ -8,7 +8,7 @@ public class Hotel {
 
     Hotel(String nome) {
         this.setNome(nome);
-        this.quartos = new HashMap<Integer, Quarto>();
+        this.setQuartos(new HashMap<Integer, Quarto>());
     }
 
     Hotel(String nome, String endereco) {
@@ -45,10 +45,16 @@ public class Hotel {
     }
 
     public void listarQuartosDisponiveis() {
+        int quartosDisponiveis = 0;
         for (var quarto : this.quartos.entrySet()) {
             if (quarto.getValue().getEstaDisponivel()) {
+                quartosDisponiveis++;
                 System.out.println(quarto);
             }
+        }
+
+        if (quartosDisponiveis == 0) {
+            System.out.println("Nenhum quarto disponivel");
         }
     }
 

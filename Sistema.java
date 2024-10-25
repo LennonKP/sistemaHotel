@@ -1,19 +1,20 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Sistema {
     private Map<String, Hotel> hoteis;
-    private Map<Integer, Reserva> reservas;
+    private Map<UUID, Reserva> reservas;
     private List<Cliente> clientes;
     private Administrador admin;
 
-    Sistema() {
+    public Sistema() {
         this.hoteis = new HashMap<String, Hotel>();
-        this.reservas = new HashMap<Integer, Reserva>();
+        this.reservas = new HashMap<UUID, Reserva>();
         this.clientes = new ArrayList<Cliente>();
         this.admin = new Administrador("Lennon");
     }
@@ -25,8 +26,10 @@ public class Sistema {
             this.displayMenu();
             option = scanner.nextInt();
             scanner.nextLine();
+            System.out.println();
             this.handleOption(option, scanner);
-        } while (option != 8);
+            System.out.println();
+        } while (option != 9);
 
         scanner.close();
     }
@@ -40,7 +43,8 @@ public class Sistema {
         System.out.println("5. Fazer Reserva");
         System.out.println("6. Cancelar Reserva");
         System.out.println("7. Listar Reservas de um Cliente");
-        System.out.println("8. Sair");
+        System.out.println("8. Adicionar Cliente");
+        System.out.println("9. Sair");
         System.out.print("Escolha uma opção: ");
     }
 
@@ -53,7 +57,8 @@ public class Sistema {
             case 5 -> fazerReserva(scanner);
             case 6 -> cancelarReserva(scanner);
             case 7 -> listarReservasCliente(scanner);
-            case 8 -> System.out.println("Saindo do sistema...");
+            case 8 -> adicionarCliente(scanner);
+            case 9 -> System.out.println("Saindo do sistema...");
             default -> System.out.println("Opção inválida. Tente novamente.");
         }
     }
@@ -121,6 +126,18 @@ public class Sistema {
      * @param scanner
      */
     private void fazerReserva(Scanner scanner) {
+        String nomeCliente = ScannerUtils.getStringEntry(scanner, "Informe o nome do Cliente: ");
+        Cliente cliente = null;
+        for (var c : this.clientes) {
+            if (c.getNome().equals(nomeCliente)) {
+                cliente = c;
+            }
+        }
+        if (cliente == null) {
+            System.out.println("Cliente não encontrado");
+            return;
+        }
+
         String nomeHotel = ScannerUtils.getStringEntry(scanner, "Informe o nome do Hotel: ");
         var hotel = hoteis.get(nomeHotel);
         if (hotel == null) {
@@ -128,18 +145,35 @@ public class Sistema {
             return;
         }
 
-        // continuar
+        int numeroQuarto = ScannerUtils.getIntegerEntry(scanner, "Informe o número do Quarto: ", i -> i > 0);
+        var quarto = hotel.getQuartos().get(numeroQuarto);
+        if (quarto == null) {
+            System.out.println("Quarto não existe");
+            return;
+        }
+
+        var dataIn = ScannerUtils.getDateEntry(scanner, "Informe a data de CheckIn", d -> d.compareTo(new Date()) >= 0);
+        var dataOut = ScannerUtils.getDateEntry(scanner, "Informe a data de CheckOut", d -> d.after(dataIn));
+        cliente.fazerReserva(this.reservas, quarto, dataIn, dataOut);
     }
 
     /**
      * Solicita o número da reserva e realiza o cancelamento.
+     * Lennon: e o cliente? tem o método de cancelar reserva e não estamos pegando o
+     * cliente aqui
      * 
      * @param scanner
      */
     private void cancelarReserva(Scanner scanner) {
-        int numeroReserva = ScannerUtils.getIntegerEntry(scanner, "Informe o número da reserva:",
-                input -> input == input);
-        throw new UnsupportedOperationException("Unimplemented method 'cancelarReserva'");
+        var numeroReserva = UUID.fromString(ScannerUtils.getStringEntry(scanner, "Informe o número da reserva: "));
+        var reserva = this.reservas.get(numeroReserva);
+        if (reserva == null) {
+            System.out.println("Reserva não existe");
+            return;
+        }
+
+        reserva.cancelar();
+        System.out.println("Reserva cancelada");
     }
 
     /**
@@ -158,14 +192,25 @@ public class Sistema {
         if (clienteReserva == null) {
             System.out.println("Cliente não encontrado");
             return;
-
         }
 
+        int numReservas = 0;
         for (var reserva : this.reservas.entrySet()) {
             var reservaValue = reserva.getValue();
             if (reservaValue.getCliente() == clienteReserva) {
+                numReservas++;
                 System.out.println(reservaValue);
             }
         }
+
+        if (numReservas == 0) {
+            System.out.println("Nenhuma reserva");
+        }
+    }
+
+    private void adicionarCliente(Scanner scanner) {
+        String nomeCliente = ScannerUtils.getStringEntry(scanner, "Informe o nome do Cliente: ");
+
+        this.clientes.add(new Cliente(nomeCliente));
     }
 }
